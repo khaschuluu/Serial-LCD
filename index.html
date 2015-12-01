@@ -1,0 +1,97 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="utf8">
+        <style>
+            code#holder {
+                position: absolute;
+                background-color: #222;
+                color: #eee;
+                width: 570px;
+                height: 170px;
+                border-radius: 5px;
+                padding: 5px;
+            }
+        </style>
+    </head>
+    <body>
+        <h5>Virtual keyboard</h5>
+        <button type="button" id="plus">+</button>
+        <button type="button" id="minus">-</button>
+        <button type="button" id="times">&times;</button>
+        <button type="button" id="divide">&divide;</button>
+        <br />
+        <button type="button" id="0">0</button>
+        <button type="button" id="1">1</button>
+        <button type="button" id="2">2</button>
+        <button type="button" id="3">3</button>
+        <button type="button" id="4">4</button>
+        <button type="button" id="5">5</button>
+        <button type="button" id="6">6</button>
+        <button type="button" id="7">7</button>
+        <button type="button" id="8">8</button>
+        <button type="button" id="9">9</button>
+        <br />
+        <button type="button" id="A">A</button>
+        <button type="button" id="B">B</button>
+        <button type="button" id="C">C</button>
+        <button type="button" id="D">D</button>
+        <button type="button" id="E">E</button>
+        <button type="button" id="F">F</button>
+        <button type="button" id="G">G</button>
+        <button type="button" id="H">H</button>
+        <button type="button" id="I">I</button>
+        <button type="button" id="J">J</button>
+        <button type="button" id="K">K</button>
+        <button type="button" id="L">L</button>
+        <button type="button" id="M">M</button>
+        <br />
+        <button type="button" id="N">N</button>
+        <button type="button" id="O">O</button>
+        <button type="button" id="P">P</button>
+        <button type="button" id="Q">Q</button>
+        <button type="button" id="R">R</button>
+        <button type="button" id="S">S</button>
+        <button type="button" id="T">T</button>
+        <button type="button" id="U">U</button>
+        <button type="button" id="V">V</button>
+        <button type="button" id="W">W</button>
+        <button type="button" id="X">X</button>
+        <button type="button" id="Y">Y</button>
+        <button type="button" id="Z">Z</button>
+        <h5>Received</h5>
+        <code id="holder"></code>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="http://localhost/chipidip/js/lib/jquery.js"></script>
+        <script>
+            var socket = io.connect('http://localhost:8080');
+            socket.on('serial', function (data) {
+                $('#holder').append(data);
+            });
+
+            $('button').click(function() {
+                socket.emit('serial', $(this).attr("id"));
+            });
+
+            $(window).keypress(function(e) {
+                e.preventDefault();
+                if(e.which === 43)
+                    which = "plus";
+                else if(e.which === 45)
+                    which = "minus";
+                else if(e.which === 47)
+                    which = "divide";
+                else if(e.which === 42)
+                    which = "times";
+                else
+                    which = String.fromCharCode(e.which).toUpperCase();
+                $('button#' + which).trigger("click");
+                $('button#' + which).stop(true, true).animate({
+                    opacity: .2 
+                }, 100, function() {
+                    $(this).animate({opacity:1}, 0);
+                });
+            });
+        </script>
+    </body>
+</html>
